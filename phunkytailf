@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+#
+# this script takes as input log file names and displays each in a different
+# color as a tail -f.
+#
+#                       - Rich DiMartino  dimartin@meanstreak.net
+#
+# 0 = dark grey
+# 1 = red
+# 2 = green
+# 3 = yellow
+# 4 = blue
+# 5 = dark pink
+# 6 = cyan
+# 7 = high white
+#
+
+
+@logs = @ARGV;
+@colors = (5,4,3,6,7);
+$colornum = 0;
+$esc = chr(27);
+$colorend = $esc."[0m";
+$notice = $esc."[1;32mQueue size:";
+$warning = $esc."[1;33mNew orders needing download:";
+$error = $esc."[1;31mError";
+
+foreach $log (@logs) {
+ $loghandle{$log} = "$LOG.$log";
+ $loghandle = $loghandle{$log};
+ open($loghandle{$log}, $log) || die "couldn't open $log: $!";
+ seek($loghandle{$log},-1000,2);
+ $j = <$loghandle>;
+ ($j, $oldinode{$log}) = stat $log;
+ $color{$log} = $colors[$colornum];
+ $colorstart{$log} = $esc."[1;3".$colors[$colornum]."m";
+ printf "%scolors[%d] = %d => %s%s\n", $colorstart{$log}, $colornum, $colors[$colornum], $log, $colorend;
+
+ $colornum++;
+ if ($colornum == @colors) {
+   $colornum = 0;
+ }
+}
+
+$old = select STDIN; $| = 1;
+select STDOUT;       $| = 1;
+select $old;
+
+for (;;) {
+ foreach $log (@logs) {
+   $loghandle = $loghandle{$log};
+   while(<$loghandle>) {
+     chomp;
+     # I should write something for pattern matching here
+#    $_ =~ s/Queue size:/$colorend$notice$colorend$colorstart{$log}/;
+#    $_ =~ s/New orders needing download/$colorend$warning$colorend$colorstart{$log}/;
+#    $_ =~ s/Error/$colorend$error$colorend$colorstart{$log}/;
+     print $colorstart{$log},$_,$colorend,"\n";
+     $i{$log} = 60;
+   }
+   if($i{$log}-- < 0) {
+     $i{$log} = 30;
+     ($j, $newinode,$mode,$nlink,$uid,$gid,$rdev,$size) = stat $log;
+     if ($newinode != $oldinode{$log} & $size) {
+       print "Rotation of $log!\n";
+       close $loghandle{$log};
+       open ($loghandle{$log}, $log);
+# shoudn't need this here..     seek($loghandle{$log}, 0, 1);
+       $oldinode{$log} = $newinode;
+     }
+   }
+   seek($loghandle{$log}, 0, 1);
+ }
+ sleep 1;
+}
