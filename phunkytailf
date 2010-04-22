@@ -54,9 +54,9 @@ for (;;) {
    while(<$loghandle>) {
      chomp;
      # I should write something for pattern matching here
-#    $_ =~ s/Notice:/$colorend$notice$colorend$colorstart{$log}/;
-#    $_ =~ s/Warning:/$colorend$warning$colorend$colorstart{$log}/;
-#    $_ =~ s/Error:/$colorend$error$colorend$colorstart{$log}/;
+     #$_ =~ s/Notice:/$colorend$notice$colorend$colorstart{$log}/;
+     #$_ =~ s/Warning:/$colorend$warning$colorend$colorstart{$log}/;
+     #$_ =~ s/Error:/$colorend$error$colorend$colorstart{$log}/;
      print $colorstart{$log},$_,$colorend,"\n";
      $i{$log} = 60;
    }
