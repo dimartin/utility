@@ -21,9 +21,11 @@
 $colornum = 0;
 $esc = chr(27);
 $colorend = $esc."[0m";
-$notice = $esc."[1;32mQueue size:";
-$warning = $esc."[1;33mNew orders needing download:";
-$error = $esc."[1;31mError";
+
+# This is for the pattern matches later on
+# $notice = $esc."[1;32mNotice:";
+# $warning = $esc."[1;33mWarning:";
+# $error = $esc."[1;31mError";
 
 foreach $log (@logs) {
  $loghandle{$log} = "$LOG.$log";
@@ -52,9 +54,9 @@ for (;;) {
    while(<$loghandle>) {
      chomp;
      # I should write something for pattern matching here
-#    $_ =~ s/Queue size:/$colorend$notice$colorend$colorstart{$log}/;
-#    $_ =~ s/New orders needing download/$colorend$warning$colorend$colorstart{$log}/;
-#    $_ =~ s/Error/$colorend$error$colorend$colorstart{$log}/;
+#    $_ =~ s/Notice:/$colorend$notice$colorend$colorstart{$log}/;
+#    $_ =~ s/Warning:/$colorend$warning$colorend$colorstart{$log}/;
+#    $_ =~ s/Error:/$colorend$error$colorend$colorstart{$log}/;
      print $colorstart{$log},$_,$colorend,"\n";
      $i{$log} = 60;
    }
