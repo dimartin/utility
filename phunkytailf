@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# this script takes as input log file names and displays each in a different
+# This script takes as input log file names and displays each in a different
 # color as a tail -f.
 #
 #                       - Rich DiMartino  dimartin@meanstreak.net
@@ -22,7 +22,9 @@ $colornum = 0;
 $esc = chr(27);
 $colorend = $esc."[0m";
 
-# This is for the pattern matches later on
+# This is for the pattern matches later on basically replaces the words Notice:, Warning: and Error: 
+# with color equavalents.  This is very hacky, but worked for what I needed.
+#
 # $notice = $esc."[1;32mNotice:";
 # $warning = $esc."[1;33mWarning:";
 # $error = $esc."[1;31mError";
@@ -53,10 +55,14 @@ for (;;) {
    $loghandle = $loghandle{$log};
    while(<$loghandle>) {
      chomp;
-     # I should write something for pattern matching here
+
+     # This is where we put in those colorfied matched words.
+     # There has to be a much easier and effecient way to do this.
+     #
      #$_ =~ s/Notice:/$colorend$notice$colorend$colorstart{$log}/;
      #$_ =~ s/Warning:/$colorend$warning$colorend$colorstart{$log}/;
      #$_ =~ s/Error:/$colorend$error$colorend$colorstart{$log}/;
+
      print $colorstart{$log},$_,$colorend,"\n";
      $i{$log} = 60;
    }
@@ -67,7 +73,7 @@ for (;;) {
        print "Rotation of $log!\n";
        close $loghandle{$log};
        open ($loghandle{$log}, $log);
-# shoudn't need this here..     seek($loghandle{$log}, 0, 1);
+       seek($loghandle{$log}, 0, 1);
        $oldinode{$log} = $newinode;
      }
    }
