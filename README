@@ -1,3 +1,5 @@
-This is a lame perl script that emulates tail -f for multiple files and color codes each one.
+This is just an assortment of things that I've used along my way
+
+phunkytailf - This is a lame perl script that emulates tail -f for multiple files and color codes each one.
 
 - Rich
