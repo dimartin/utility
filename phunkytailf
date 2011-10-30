@@ -22,7 +22,7 @@ $colornum = 0;
 $esc = chr(27);
 $colorend = $esc."[0m";
 
-# This is for the pattern matches later on basically replaces the words Notice:, Warning: and Error: 
+# This is for the pattern matches later on basically replaces the words Notice:, Warning: and Error:
 # with color equavalents.  This is very hacky, but worked for what I needed.
 #
 # $notice = $esc."[1;32mNotice:";
